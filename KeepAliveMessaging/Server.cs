@@ -161,7 +161,6 @@ namespace KeepAliveMessaging
 					string message = Encoding.ASCII.GetString(data);
 					Console.WriteLine($"Received {message} from {result.RemoteEndPoint}");
 
-					// Check if the message is a command to change the UDP port
 					// NOTE: When change the UDP port, it might be closing the existing socket and creating a new one.
 					// This could cause any ongoing communication on the old socket to be terminated, resulting in the `SocketException`
 					if (message.StartsWith("port:"))
@@ -173,24 +172,12 @@ namespace KeepAliveMessaging
 							//udpServer.Client.Bind(new IPEndPoint(IPAddress.Any, port));
 							udpServer = new UdpClient(port);
 						}
-
-						//await _semaphore.WaitAsync();
-						//try
-						//{
-						//	udpServer.Client.Bind(new IPEndPoint(IPAddress.Any, port));
-						//}
-						//finally
-						//{
-						//	_semaphore.Release();
-						//}
 					}
-					// Check if the message is a command to change the Keep Alive timeout
 					else if (message.StartsWith("timeout:"))
 					{
 						keepAliveTimeout = int.Parse(message.Split(':')[1].Trim());
 						Console.WriteLine($"[updated] Changed Keep Alive timeout to {keepAliveTimeout} seconds");
 					}
-					// Check if the message is a command to change the retry count
 					else if (message.StartsWith("retry:"))
 					{
 						Console.WriteLine($"[updated] Changed retry count to {retryCount}");
